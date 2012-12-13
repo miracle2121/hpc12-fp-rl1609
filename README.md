@@ -7,4 +7,4 @@ How to compile:
 Simply type make
 
 How to run:
-clfft size device_name
+./clfft size device_name
