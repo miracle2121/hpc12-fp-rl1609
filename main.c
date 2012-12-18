@@ -26,9 +26,9 @@ int main(int argc, char** argv) {
 
     clFFT(src, dst, n, device);
 
-    for (int i = 0; i < 2 * n; i += 2) {
-        printf("%d %9f %9f\n", i / 2, dst[i], dst[i + 1]);
-    }
+    //for (int i = 0; i < 2 * n; i += 2) {
+    //    printf("%d %9f %9f\n", i / 2, dst[i], dst[i + 1]);
+    //}
 
     free(src);
     free(dst);

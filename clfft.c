@@ -16,7 +16,7 @@ cl_mem cl_src, cl_dst;
 
 cl_mem *in, *out;
 
-int N;
+long N;
 
 void naivefft() {
     char *knl_text = read_file("kernels/naivefft.cl");
@@ -107,31 +107,7 @@ void stockham() {
     get_timestamp(&end);
     double elapsed = timestamp_diff_in_seconds(start, end);
     printf("Elapsed time: %fs\n", elapsed);
-}
-
-void recursive_fft_cpu() {
-    char *knl_text = read_file("kernels/recursive_fft_cpu.cl");
-    knl = kernel_from_string(ctx, knl_text, "recursive_fft_cpu", "-g");
-    free(knl_text);
-    
-    timestamp_type start, end;
-    get_timestamp(&start);
-    
-    in = &cl_src; out = &cl_dst;
-    
-    SET_4_KERNEL_ARGS(knl, *in, *out, cl_twiddle, N);
-    size_t ldim[] = {128};
-    size_t gdim[] = {N / 2};
-    
-    CALL_CL_GUARDED(clEnqueueNDRangeKernel,
-        (queue, knl,
-        /*dimensions*/ 1, NULL, gdim, ldim,
-        0, NULL, NULL));
-    CALL_CL_GUARDED(clFinish, (queue));
-    
-    get_timestamp(&end);
-    double elapsed = timestamp_diff_in_seconds(start, end);
-    printf("Elapsed time: %fs\n", elapsed);
+    printf("Performance: %.2f Gflops\n", 5 * N * logN / elapsed / 1e9);
 }
 
 
@@ -161,7 +137,6 @@ int clFFT(const float* src, float* dst, int n, char* device) {
     //naivefft();
     //cooleyTukey();
     stockham();
-    //recursive_fft_cpu();
 
     CALL_CL_GUARDED(clEnqueueReadBuffer, (
         queue, *out, CL_TRUE, 0, sizeof(float) * N * 2, 

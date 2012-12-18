@@ -4,10 +4,10 @@
 
 #define TWOPI 6.28318530718
 
-__kernel void fft_radix2(__global float2* src, 
-                         __global float2* dst,
-                         const int p,
-                         const int t) {
+__kernel void fft_radix2(__global float2* src, /*input array*/ 
+                         __global float2* dst, /*output array*/
+                         const int p,          /*block size*/
+                         const int t) {        /*number of threads*/
 
     const int gid = get_global_id(0);
     const int k = gid & (p - 1);
